@@ -1,0 +1,181 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
+</div>
+
+<!-- Admin-specific dashboard content -->
+<div class="row">
+    <!-- System Overview Cards -->
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary dashboard-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container bg-icon-primary me-3">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title">Patients</h5>
+                        <p class="card-text display-6">{{ patient_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <small>Total Registered</small>
+                <a href="{{ url_for('patients') }}" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success dashboard-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container bg-icon-success me-3">
+                        <i class="fas fa-user-md fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title">Doctors</h5>
+                        <p class="card-text display-6">{{ doctor_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <small>Medical Staff</small>
+                <a href="{{ url_for('doctors') }}" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info dashboard-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container bg-icon-info me-3">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title">Appointments</h5>
+                        <p class="card-text display-6">{{ appointment_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <small>Today's Schedule</small>
+                <a href="{{ url_for('appointments') }}" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning dashboard-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container bg-icon-warning me-3">
+                        <i class="fas fa-user-shield fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title">System Users</h5>
+                        <p class="card-text display-6">{{ user_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <small>Total Users</small>
+                <a href="{{ url_for('user_management') }}" class="text-white"><i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_patient') }}" class="btn btn-outline-primary btn-lg w-100">
+                            <i class="fas fa-user-plus fa-2x mb-2"></i><br>
+                            Add Patient
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_doctor') }}" class="btn btn-outline-success btn-lg w-100">
+                            <i class="fas fa-user-md fa-2x mb-2"></i><br>
+                            Add Doctor
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('add_appointment') }}" class="btn btn-outline-info btn-lg w-100">
+                            <i class="fas fa-calendar-plus fa-2x mb-2"></i><br>
+                            Schedule Appointment
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ url_for('user_management') }}" class="btn btn-outline-warning btn-lg w-100">
+                            <i class="fas fa-users-cog fa-2x mb-2"></i><br>
+                            Manage Users
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-history me-2"></i>Recent Activities (Last 24 Hours)</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Diagnosis</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in recent_activities %}
+                            <tr>
+                                <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                                <td>Dr. {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</td>
+                                <td>{{ appointment.appointment_date }} at {{ appointment.appointment_time.strftime('%H:%M') }}</td>
+                                <td>{{ appointment.diagnosis[:50] }}{% if appointment.diagnosis|length > 50 %}...{% endif %}</td>
+                                <td><span class="badge bg-success">{{ appointment.status }}</span></td>
+                                <td>
+                                    <a href="{{ url_for('view_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('edit_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No recent activities in the last 24 hours.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

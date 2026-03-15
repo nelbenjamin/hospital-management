@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Add Prescription - {{ patient.first_name }} {{ patient.last_name }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('patient_prescriptions', patient_id=patient.id) }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Back to Prescriptions
+    </a>
+</div>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-plus me-2"></i>Add Prescription</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_prescription', patient_id=patient.id) }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="medication_name" class="form-label">Medication Name</label>
+                    {{ form.medication_name(class="form-control", placeholder="Enter medication name") }}
+                    {% for error in form.medication_name.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="dosage" class="form-label">Dosage</label>
+                    {{ form.dosage(class="form-control", placeholder="e.g., 500mg, 10ml") }}
+                    {% for error in form.dosage.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="frequency" class="form-label">Frequency</label>
+                    {{ form.frequency(class="form-control") }}
+                    {% for error in form.frequency.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="duration" class="form-label">Duration</label>
+                    {{ form.duration(class="form-control", placeholder="e.g., 7 days, 2 weeks, 1 month") }}
+                    {% for error in form.duration.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="instructions" class="form-label">Instructions</label>
+                {{ form.instructions(class="form-control", rows=3, placeholder="Enter special instructions for the patient...") }}
+                {% for error in form.instructions.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

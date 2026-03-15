@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}View Appointment{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Appointment Details</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('appointments') }}" class="btn btn-sm btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> Back to Appointments
+        </a>
+        <a href="{{ url_for('edit_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-outline-primary me-2">
+            <i class="fas fa-edit me-1"></i> Edit
+        </a>
+        <a href="{{ url_for('delete_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-outline-danger btn-delete">
+            <i class="fas fa-trash me-1"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Appointment Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Patient:</div>
+                    <div class="col-sm-9">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Doctor:</div>
+                    <div class="col-sm-9">Dr. {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }} ({{ appointment.doctor.specialization }})</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Date:</div>
+                    <div class="col-sm-9">{{ appointment.appointment_date }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Time:</div>
+                    <div class="col-sm-9">{{ appointment.appointment_time.strftime('%H:%M') }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Status:</div>
+                    <div class="col-sm-9"><span class="badge bg-{% if appointment.status == 'Completed' %}success{% elif appointment.status == 'Cancelled' %}danger{% else %}info{% endif %}">{{ appointment.status }}</span></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Diagnosis/Reason:</div>
+                    <div class="col-sm-9">{{ appointment.diagnosis }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 fw-bold">Date Created:</div>
+                    <div class="col-sm-9">{{ appointment.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

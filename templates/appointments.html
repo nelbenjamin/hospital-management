@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-check me-2"></i>Appointments</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('add_appointment') }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus me-1"></i> Schedule New Appointment
+        </a>
+    </div>
+</div>
+
+{% if appointments %}
+<div class="row">
+    {% for appointment in appointments %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 appointment-card">
+            <div class="card-header 
+                {% if appointment.status == 'Scheduled' %}bg-info
+                {% elif appointment.status == 'Completed' %}bg-success
+                {% else %}bg-danger{% endif %} text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar me-2"></i>Appointment #{{ appointment.id }}
+                </h5>
+                <span class="badge bg-light text-dark">{{ appointment.status }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="card-text">
+                            <i class="fas fa-user me-2 text-primary"></i>
+                            <strong>Patient:</strong> {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}<br>
+                            
+                            <i class="fas fa-user-md me-2 text-success"></i>
+                            <strong>Doctor:</strong> Dr. {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}<br>
+                            
+                            <i class="fas fa-calendar-day me-2 text-info"></i>
+                            <strong>Date:</strong> {{ appointment.appointment_date.strftime('%Y-%m-%d') }}<br>
+                            
+                            <i class="fas fa-clock me-2 text-info"></i>
+                            <strong>Time:</strong> {{ appointment.appointment_time.strftime('%H:%M') }}<br>
+                            
+                            <i class="fas fa-hourglass me-2 text-info"></i>
+                            <strong>Duration:</strong> {{ appointment.duration }} minutes<br>
+                            
+                            <i class="fas fa-stethoscope me-2 text-info"></i>
+                            <strong>Reason:</strong> {{ appointment.diagnosis[:50] }}{% if appointment.diagnosis|length > 50 %}...{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('view_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye me-1"></i> View
+                    </a>
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('edit_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit me-1"></i> Edit
+                    </a>
+                    <a href="{{ url_for('delete_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this appointment?')">
+                        <i class="fas fa-trash me-1"></i> Delete
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>No appointments found.
+</div>
+{% endif %}
+{% endblock %}

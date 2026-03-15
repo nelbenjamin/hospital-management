@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}View Doctor{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Doctor Details</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('doctors') }}" class="btn btn-sm btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> Back to Doctors
+        </a>
+        <a href="{{ url_for('edit_doctor', doctor_id=doctor.id) }}" class="btn btn-sm btn-outline-primary me-2">
+            <i class="fas fa-edit me-1"></i> Edit
+        </a>
+        <a href="{{ url_for('delete_doctor', doctor_id=doctor.id) }}" class="btn btn-sm btn-outline-danger btn-delete">
+            <i class="fas fa-trash me-1"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">Professional Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">First Name:</div>
+                    <div class="col-sm-8">{{ doctor.first_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Last Name:</div>
+                    <div class="col-sm-8">{{ doctor.last_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Specialization:</div>
+                    <div class="col-sm-8">{{ doctor.specialization }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Gender:</div>
+                    <div class="col-sm-8">{{ doctor.gender }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Contact Number:</div>
+                    <div class="col-sm-8">{{ doctor.contact_number or 'N/A' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Email:</div>
+                    <div class="col-sm-8">{{ doctor.email or 'N/A' }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 fw-bold">Date Added:</div>
+                    <div class="col-sm-8">{{ doctor.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Upcoming Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Patient</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time.strftime('%H:%M') }}</td>
+                                <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                                <td><span class="badge bg-{% if appointment.status == 'Completed' %}success{% elif appointment.status == 'Cancelled' %}danger{% else %}info{% endif %}">{{ appointment.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No upcoming appointments.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

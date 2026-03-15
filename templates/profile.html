@@ -1,0 +1,22 @@
+{% extends base_template %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-user me-2"></i>My Profile</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">User Information</h5>
+                <p><strong>Name:</strong> {{ current_user.first_name }} {{ current_user.last_name }}</p>
+                <p><strong>Username:</strong> {{ current_user.username }}</p>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Role:</strong> {{ current_user.role }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

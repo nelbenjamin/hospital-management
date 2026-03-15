@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Edit Appointment{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('appointments') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Appointments
+    </a>
+</div>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-check me-2"></i>Edit Appointment</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="patient_search" class="form-label"><i class="fas fa-user me-1"></i>Patient</label>
+                    <input type="text" class="form-control" id="patient_search" list="patient_options" placeholder="Type to search for a patient..." autocomplete="off" value="{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}">
+                    <datalist id="patient_options">
+                        {% for patient_id, patient_name in form.patient_id.choices %}
+                            <option value="{{ patient_name }}" data-id="{{ patient_id }}">{{ patient_name }}</option>
+                        {% endfor %}
+                    </datalist>
+                    <input type="hidden" id="patient_id" name="patient_id" value="{{ appointment.patient_id }}" required>
+                    {% for error in form.patient_id.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="doctor_search" class="form-label"><i class="fas fa-user-md me-1"></i>Doctor</label>
+                    <input type="text" class="form-control" id="doctor_search" list="doctor_options" placeholder="Type to search for a doctor..." autocomplete="off" value="Dr. {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }} ({{ appointment.doctor.specialization }})">
+                    <datalist id="doctor_options">
+                        {% for doctor_id, doctor_name in form.doctor_id.choices %}
+                            <option value="{{ doctor_name }}" data-id="{{ doctor_id }}">{{ doctor_name }}</option>
+                        {% endfor %}
+                    </datalist>
+                    <input type="hidden" id="doctor_id" name="doctor_id" value="{{ appointment.doctor_id }}" required>
+                    {% for error in form.doctor_id.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="appointment_date" class="form-label"><i class="fas fa-calendar me-1"></i>Appointment Date</label>
+                    {{ form.appointment_date(class="form-control", type="date") }}
+                    {% for error in form.appointment_date.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="duration" class="form-label"><i class="fas fa-hourglass me-1"></i>Duration</label>
+                    {{ form.duration(class="form-select") }}
+                    {% for error in form.duration.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="appointment_time" class="form-label"><i class="fas fa-clock me-1"></i>Appointment Time</label>
+                    {{ form.appointment_time(class="form-control") }}
+                    {% for error in form.appointment_time.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="status" class="form-label"><i class="fas fa-info-circle me-1"></i>Status</label>
+                    {{ form.status(class="form-select") }}
+                    {% for error in form.status.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="diagnosis" class="form-label"><i class="fas fa-stethoscope me-1"></i>Diagnosis/Reason</label>
+                {{ form.diagnosis(class="form-control", rows=4) }}
+                {% for error in form.diagnosis.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('view_appointment', appointment_id=appointment.id) }}" class="btn btn-secondary me-md-2">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </a>
+                {{ form.submit(class="btn btn-primary", id="submit-btn") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Patient search functionality
+    $('#patient_search').on('input', function() {
+        const searchText = $(this).val().toLowerCase();
+        const options = $('#patient_options option');
+        let found = false;
+        
+        options.each(function() {
+            const optionText = $(this).val().toLowerCase();
+            if (optionText.includes(searchText)) {
+                $('#patient_id').val($(this).data('id'));
+                found = true;
+                return false; // Break the loop
+            }
+        });
+        
+        if (!found) {
+            $('#patient_id').val('');
+        }
+    });
+    
+    // Doctor search functionality
+    $('#doctor_search').on('input', function() {
+        const searchText = $(this).val().toLowerCase();
+        const options = $('#doctor_options option');
+        let found = false;
+        
+        options.each(function() {
+            const optionText = $(this).val().toLowerCase();
+            if (optionText.includes(searchText)) {
+                $('#doctor_id').val($(this).data('id'));
+                found = true;
+                return false; // Break the loop
+            }
+        });
+        
+        if (!found) {
+            $('#doctor_id').val('');
+        }
+    });
+    
+    // Form validation
+    $('form').on('submit', function(e) {
+        if (!$('#patient_id').val()) {
+            e.preventDefault();
+            alert('Please select a valid patient from the list');
+            return false;
+        }
+        if (!$('#doctor_id').val()) {
+            e.preventDefault();
+            alert('Please select a valid doctor from the list');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
